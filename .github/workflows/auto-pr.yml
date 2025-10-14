@@ -9,6 +9,9 @@ permissions:
   contents: read
   pull-requests: write
 
+
+
+
 jobs:
   create-or-update-pr:
     runs-on: ubuntu-latest
@@ -19,9 +22,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Setup GitHub CLI
-        uses: actions/setup-gh-cli@v4
 
       - name: Prepare base
         run: |

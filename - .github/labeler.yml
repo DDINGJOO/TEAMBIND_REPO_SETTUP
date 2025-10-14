@@ -1,0 +1,6 @@
+backend:
+  - "src/main/java/**"
+docs:
+  - "docs/**"
+infra:
+  - ".github/**"

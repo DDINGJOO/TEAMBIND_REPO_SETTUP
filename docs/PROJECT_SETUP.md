@@ -448,7 +448,7 @@ PR 만들어드릴까요?
 
 ## 🔗 참고 링크
 
-- [GitHub 이슈 작성 가이드](./ISSUE_GUIDE.md)
+- [GitHub 이슈 작성 가이드](ISSUE_GUIDE.md)
 - [GitHub CLI 문서](https://cli.github.com/manual/)
 - [GitHub Actions 문서](https://docs.github.com/en/actions)
 

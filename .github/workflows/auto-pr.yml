@@ -1,0 +1,54 @@
+name: Auto PR
+
+on:
+  push:
+    branches:
+      - "feature/**"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  create-or-update-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install gh
+        uses: cli/cli-action@v2
+
+      - name: Prepare base
+        run: |
+          git fetch origin main || true
+          echo "BASE=main" >> $GITHUB_ENV
+
+      - name: Generate summary
+        run: |
+          echo "# 변경 요약" > SUMMARY.md
+          echo "" >> SUMMARY.md
+          echo "## 커밋" >> SUMMARY.md
+          git log --pretty=format:'- %h %s (%an)' origin/${BASE}..HEAD >> SUMMARY.md
+          echo "" >> SUMMARY.md
+          echo "## 변경 파일 통계" >> SUMMARY.md
+          git diff --shortstat origin/${BASE}..HEAD >> SUMMARY.md
+          echo "" >> SUMMARY.md
+          echo "## 주요 변경 파일" >> SUMMARY.md
+          git diff --name-status origin/${BASE}..HEAD | head -n 50 >> SUMMARY.md
+
+      - name: Create or update PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          HEAD_BRANCH="${GITHUB_REF_NAME}"
+          BASE_BRANCH="${BASE}"
+          TITLE="$(git log -1 --pretty=%s)"
+          EXISTING=$(gh pr list --head "${HEAD_BRANCH}" --base "${BASE_BRANCH}" --state open --json number --jq '.[0].number')
+          if [ -n "$EXISTING" ]; then
+            gh pr edit "$EXISTING" --title "$TITLE" --body-file SUMMARY.md
+          else
+            gh pr create --base "${BASE_BRANCH}" --head "${HEAD_BRANCH}" --title "$TITLE" --body-file SUMMARY.md
+          fi

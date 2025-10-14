@@ -1,15 +1,15 @@
 backend:
   - changed-files:
-      - any-glob-to-any-file: "src/main/java/**"
+      - any-glob-to-any-file: ["src/main/java/**"]
 
 frontend:
   - changed-files:
-      - any-glob-to-any-file: "src/main/frontend/**"
+      - any-glob-to-any-file: ["src/main/frontend/**"]
 
 docs:
   - changed-files:
-      - any-glob-to-any-file: "docs/**"
+      - any-glob-to-any-file: ["docs/**"]
 
 infra:
   - changed-files:
-      - any-glob-to-any-file: ".github/**"
+      - any-glob-to-any-file: [".github/**"]

@@ -20,8 +20,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install gh
-        uses: cli/cli-action@v2
+      - name: Setup GitHub CLI
+        uses: actions/setup-gh-cli@v4
 
       - name: Prepare base
         run: |

@@ -48,7 +48,13 @@ jobs:
           TITLE="$(git log -1 --pretty=%s)"
           EXISTING=$(gh pr list --head "${HEAD_BRANCH}" --base "${BASE_BRANCH}" --state open --json number --jq '.[0].number')
           if [ -n "$EXISTING" ]; then
-            gh pr edit "$EXISTING" --title "$TITLE" --body-file SUMMARY.md
+            BODY=$(gh pr view "$EXISTING" --json body --jq .body)
+            if echo "$BODY" | grep -q "<!-- auto-pr: lock -->"; then
+              echo "Auto PR lock marker found. Skipping title/body update and posting summary as a comment."
+              gh pr comment "$EXISTING" --body-file SUMMARY.md
+            else
+              gh pr edit "$EXISTING" --title "$TITLE" --body-file SUMMARY.md
+            fi
           else
             gh pr create --base "${BASE_BRANCH}" --head "${HEAD_BRANCH}" --title "$TITLE" --body-file SUMMARY.md
           fi

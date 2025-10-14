@@ -20,9 +20,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install gh
-        uses: cli/cli-action@v2
-
       - name: Prepare base
         run: |
           git fetch origin main || true

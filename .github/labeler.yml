@@ -1,9 +1,37 @@
 backend:
-  - changed-files:
-    - any-glob-to-any-file: "src/main/java/**"
+  - "src/main/java/**"
+
 docs:
-  - changed-files:
-    - any-glob-to-any-file: "docs/**"
+  - "docs/**"
+
 infra:
-  - changed-files:
-    - any-glob-to-any-file: ".github/**"
+  - ".github/**"
+
+# 백엔드 레이어별 라벨
+layer:entity:
+  - "src/main/java/**/entity/**"
+  - "src/main/java/**/domain/**"
+
+layer:controller:
+  - "src/main/java/**/controller/**"
+
+layer:dto:
+  - "src/main/java/**/dto/**"
+  - "src/main/java/**/request/**"
+  - "src/main/java/**/response/**"
+
+layer:repository:
+  - "src/main/java/**/repository/**"
+
+layer:service:
+  - "src/main/java/**/service/**"
+
+layer:util:
+  - "src/main/java/**/util/**"
+  - "src/main/java/**/helper/**"
+
+layer:config:
+  - "src/main/java/**/config/**"
+  - "src/main/resources/application*.yml"
+  - "src/main/resources/application*.yaml"
+  - "src/main/resources/application*.properties"

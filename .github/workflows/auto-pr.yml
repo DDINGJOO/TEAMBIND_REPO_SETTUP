@@ -12,22 +12,25 @@ permissions:
 jobs:
   create-or-update-pr:
     runs-on: ubuntu-latest
+    env:
+      PR_BODY_PATH: ${{ vars.PR_BODY_PATH }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Install gh
-        uses: cli/cli-action@v2
+      - name: Setup GitHub CLI
+        uses: actions/setup-gh-cli@v4
 
       - name: Prepare base
         run: |
           git fetch origin main || true
           echo "BASE=main" >> $GITHUB_ENV
 
-      - name: Generate summary
+      - name: Generate summary and body
         run: |
+          # Always generate a summary, even if we may not use it (for debugging/reference)
           echo "# 변경 요약" > SUMMARY.md
           echo "" >> SUMMARY.md
           echo "## 커밋" >> SUMMARY.md
@@ -38,6 +41,35 @@ jobs:
           echo "" >> SUMMARY.md
           echo "## 주요 변경 파일" >> SUMMARY.md
           git diff --name-status origin/${BASE}..HEAD | head -n 50 >> SUMMARY.md
+
+          # Decide PR body source with precedence:
+          # 1) PR_BODY_PATH (Actions Variable) if set and file exists
+          # 2) .github/PR_BODY.md
+          # 3) .github/auto-pr/body.md
+          # 4) Fallback: PR template + generated SUMMARY.md (existing behavior)
+
+          if [ -n "${PR_BODY_PATH}" ] && [ -f "${PR_BODY_PATH}" ]; then
+            echo "Using custom PR body from PR_BODY_PATH=${PR_BODY_PATH}"
+            cp "${PR_BODY_PATH}" BODY.md
+          elif [ -f ".github/PR_BODY.md" ]; then
+            echo "Using custom PR body from .github/PR_BODY.md"
+            cp .github/PR_BODY.md BODY.md
+          elif [ -f ".github/auto-pr/body.md" ]; then
+            echo "Using custom PR body from .github/auto-pr/body.md"
+            cp .github/auto-pr/body.md BODY.md
+          else
+            echo "Using fallback: PR template + auto summary"
+            if [ -f ".github/pull_request_template.md" ]; then
+              cp .github/pull_request_template.md BODY.md
+              echo "" >> BODY.md
+              echo "---" >> BODY.md
+              echo "자동 생성 요약" >> BODY.md
+              echo "" >> BODY.md
+              cat SUMMARY.md >> BODY.md
+            else
+              cp SUMMARY.md BODY.md
+            fi
+          fi
 
       - name: Create or update PR
         env:
@@ -53,8 +85,8 @@ jobs:
               echo "Auto PR lock marker found. Skipping title/body update and posting summary as a comment."
               gh pr comment "$EXISTING" --body-file SUMMARY.md
             else
-              gh pr edit "$EXISTING" --title "$TITLE" --body-file SUMMARY.md
+              gh pr edit "$EXISTING" --title "$TITLE" --body-file BODY.md
             fi
           else
-            gh pr create --base "${BASE_BRANCH}" --head "${HEAD_BRANCH}" --title "$TITLE" --body-file SUMMARY.md
+            gh pr create --base "${BASE_BRANCH}" --head "${HEAD_BRANCH}" --title "$TITLE" --body-file BODY.md
           fi

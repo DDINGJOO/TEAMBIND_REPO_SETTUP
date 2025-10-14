@@ -50,7 +50,7 @@
   4) 동일 head/base 조합의 오픈 PR이 있으면 -> PR 제목/본문을 업데이트
   5) 없으면 -> 새 PR을 생성
 - PR 제목: 최신 커밋 메시지
-- PR 본문: SUMMARY.md 내용
+- PR 본문: PR 템플릿(.github/pull_request_template.md) + 자동 생성 요약(SUMMARY.md)을 결합한 내용
 
 즉, "feature/* 브랜치에 push" 하면 -> "요약이 포함된 PR이 자동 생성/갱신" 됩니다.
 
@@ -151,6 +151,11 @@ A 하면 -> B 된다 예시(각 템플릿별로 폼에 무엇이 보이는지):
 - 라벨 규칙: `.github/labeler.yml` 수정/추가
 - PR 템플릿 문구: `.github/pull_request_template.md` 수정
 - 이슈 템플릿 폼: `.github/ISSUE_TEMPLATE/*.yml` 수정
+- PR 본문을 특정 경로의 MD로 고정:
+  - 방법 A(권장): 저장소 Settings → Actions → Variables에서 `PR_BODY_PATH` 변수를 추가하고 원하는 파일 경로(예: `docs/release-notes.md`)를 값으로 설정하면 -> 해당 파일이 PR 본문으로 사용됩니다.
+  - 방법 B: 레포에 `.github/PR_BODY.md` 파일을 만들면 -> 그 파일이 PR 본문으로 사용됩니다.
+  - 방법 C: 레포에 `.github/auto-pr/body.md` 파일을 만들면 -> 그 파일이 PR 본문으로 사용됩니다.
+  - 위 파일/변수가 없을 때만 -> 기존 동작(템플릿 + 자동 요약)에 폴백합니다. 잠금 마커(`<!-- auto-pr: lock -->`) 동작은 동일합니다.
 
 ## 9. 자주 하는 질문(FAQ)
 Q. 베이스 브랜치가 develop인데요?
@@ -161,6 +166,9 @@ Q. feature가 아니라 hotfix 브랜치에서도 PR 자동 생성하고 싶어�
 
 Q. 포크 저장소의 PR에도 라벨이 붙나요?
 - A. 네. `pull_request_target` 이벤트로 열리거나 동기화될 때 -> labeler가 작동하여 라벨을 붙입니다.
+
+Q. PR 내용을 자동으로 작성해주나요?
+- A. 기본값은 "PR 템플릿 + 자동 요약"을 합쳐서 작성합니다. 다만 특정 경로의 MD 파일을 그대로 본문으로 쓰고 싶다면 아래 중 하나를 설정하세요: 1) 저장소 Actions Variable로 `PR_BODY_PATH`를 설정(예: `docs/release-notes.md`), 2) `.github/PR_BODY.md` 파일 추가, 3) `.github/auto-pr/body.md` 파일 추가. 이런 파일/변수가 있으면 -> 해당 파일 내용이 PR 본문으로 사용되고 자동 요약은 본문에 붙지 않습니다.
 
 Q. 자동으로 생성된 PR 내용이 마음에 안 들면 어떻게 수정하나요?
 - A. PR 설명을 직접 수정한 뒤, 본문 어딘가에 다음 마커를 한 줄로 추가하세요:

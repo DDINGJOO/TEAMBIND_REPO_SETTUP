@@ -1,11 +1,5 @@
 backend:
-  - "src/main/java/**"
-
-frontend:
-  - "src/main/resources/static/**"
-  - "src/main/resources/templates/**"
-  - "frontend/**"
-  - "client/**"
+  - "**/src/main/java/**"
 
 docs:
   - "docs/**"
@@ -28,43 +22,43 @@ database:
 
 # 백엔드 레이어별 라벨
 layer:entity:
-  - "src/main/java/**/entity/**"
-  - "src/main/java/**/domain/**"
-  - "src/main/java/**/model/**"
+  - "**/src/main/java/**/entity/**"
+  - "**/src/main/java/**/domain/**"
+  - "**/src/main/java/**/model/**"
 
 layer:controller:
-  - "src/main/java/**/controller/**"
-  - "src/main/java/**/api/**"
+  - "**/src/main/java/**/controller/**"
+  - "**/src/main/java/**/api/**"
 
 layer:dto:
-  - "src/main/java/**/dto/**"
-  - "src/main/java/**/request/**"
-  - "src/main/java/**/response/**"
+  - "**/src/main/java/**/dto/**"
+  - "**/src/main/java/**/request/**"
+  - "**/src/main/java/**/response/**"
 
 layer:repository:
-  - "src/main/java/**/repository/**"
-  - "src/main/java/**/dao/**"
+  - "**/src/main/java/**/repository/**"
+  - "**/src/main/java/**/dao/**"
 
 layer:service:
-  - "src/main/java/**/service/**"
+  - "**/src/main/java/**/service/**"
 
 layer:util:
-  - "src/main/java/**/util/**"
-  - "src/main/java/**/helper/**"
-  - "src/main/java/**/common/**"
+  - "**/src/main/java/**/util/**"
+  - "**/src/main/java/**/helper/**"
+  - "**/src/main/java/**/common/**"
 
 layer:config:
-  - "src/main/java/**/config/**"
-  - "src/main/java/**/configuration/**"
+  - "**/src/main/java/**/config/**"
+  - "**/src/main/java/**/configuration/**"
 
 layer:test:
-  - "src/test/**"
+  - "**/src/test/**"
   - "**/*Test.java"
   - "**/*Tests.java"
 
 layer:resource:
-  - "src/main/resources/**/*.yml"
-  - "src/main/resources/**/*.yaml"
-  - "src/main/resources/**/*.properties"
-  - "src/main/resources/**/*.xml"
-  - "src/main/resources/**/*.json"
+  - "**/src/main/resources/**/*.yml"
+  - "**/src/main/resources/**/*.yaml"
+  - "**/src/main/resources/**/*.properties"
+  - "**/src/main/resources/**/*.xml"
+  - "**/src/main/resources/**/*.json"
